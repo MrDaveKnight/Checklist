@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sys_script_include">
+    <sys_script_include action="INSERT_OR_UPDATE">
+        <access>public</access>
+        <active>true</active>
+        <api_name>x_snc_checklist.Utils</api_name>
+        <client_callable>false</client_callable>
+        <description/>
+        <name>Utils</name>
+        <script><![CDATA[var Utils = Class.create();
+Utils.prototype = {
+	
+	// ------------------------------------------------------------
+	// EDIT ME: Document Complete/Resolved States
+	// ------------------------------------------------------------
+	// These tables, and only these tables, will be "Completed" when
+	// the _setDocStateComplete(document) method is called with an
+	// arbitrary GlideRecord document. 
+	// Reference the updateDocStateIfComplete() method.
+	// The "Set document state if checklist complete" business rule in this 
+	// application, if active, will call updateDocStateIfComplete(item) 
+	// with a checked checklist item. 
+	//
+	// Format - table_name:complete_state_value
+	CLOSED_STATE_MAP: {
+		"incident" : 6,
+		"cert_task" : 3
+	},
+	
+	initialize: function() {
+	},
+	
+	// Create a checklist for the current GlideRecord.
+	// Aborts if there is already a checklist in place.
+	// "current" is any GlideRecord type.
+	// "checklistItems" is an array of strings.
+	// No return.
+	createList: function (current, checklistItems, name) {
+		
+		if (checklistItems.length == 0)
+			return;
+		
+		// Check for existing list
+		var checklistGR = new GlideRecord("checklist");
+		checklistGR.addQuery("document", current.sys_id);
+		checklistGR.addQuery("table", current.sys_class_name);
+		checklistGR.query();
+		if (checklistGR.next()) {
+			return;
+		}
+		
+		// Create the checklist
+		checklistGR.initialize();
+		checklistGR.document = current.sys_id;
+		checklistGR.table = current.sys_class_name;
+		checklistGR.name = name;
+		var checklistSysid = checklistGR.insert();
+		if (checklistSysid) {
+			
+			// Create the checklist items
+			var itemGR = new GlideRecord("checklist_item");
+			for (var i = 0; i<checklistItems.length; i++) {
+				itemGR.initialize();
+				itemGR.checklist = checklistSysid;
+				itemGR.name = checklistItems[i];
+				itemGR.order = i;
+				if (!itemGR.insert()) {
+					gs.error("Checklist item insert failed on " + current.number);
+					break; // abort on failure
+				}
+			}
+		}
+	},
+	
+	// Determine if current GlideRecord's checklist is complete.
+	// "current" can be any GlideRecord type.
+	// Returns boolean.
+	isComplete: function (current) {
+		var checklistGR = new GlideRecord("checklist");
+		checklistGR.addQuery("document", current.sys_id);
+		checklistGR.addQuery("table", current.sys_class_name);
+		checklistGR.query();
+		if (checklistGR.next()) {
+			return this.__checklistIsComplete(checklistGR);
+		}
+		else {
+			return true; // No checklist, so it's done.
+		}
+	},
+	
+	// Pass in a checklist_item GlideRecord, determine if the entire
+	// checklist is complete, and update the "state" field in the parent document
+	// to complete if the checklist is complete.
+	// Returns true if processing is successful.
+	// Returns false if there is a processing error.
+	// The CLOSED_STATE_MAP object defines the states for each
+	// GlideRecord type
+	updateDocStateIfComplete: function (checklistItemGR) {
+		
+		var retValue = null;
+		var checklistGR = new GlideRecord("checklist");
+		if (checklistGR.get(checklistItemGR.checklist)) {
+			if (this._isChecklistComplete(checklistGR)) {
+				var documentTable = checklistGR.table;
+				var documentId = checklistGR.document;
+				var targetGR = new GlideRecord(documentTable);
+				if (targetGR.get(documentId)) {
+					return this._setDocStateComplete(targetGR);
+				}
+			}
+			return true; // Successful processing
+		}
+		return false;
+	},
+	
+	//
+	// Helper functions
+	//
+	
+	// Pass in a checklist GlideRecord
+	// Checks to see if all items in the checklist are complete
+	// Returns boolean
+	_isChecklistComplete: function (checklistGR) {
+		
+		var itemGR = new GlideRecord("checklist_item");
+		itemGR.addQuery("checklist", checklistGR.sys_id);
+		itemGR.query();
+		while (itemGR.next()) {
+			if (!itemGR.complete) {
+				return false;
+			}
+		}
+		return true; // No items, or all items complete.
+	},
+	
+	// Set the "state" field in the targeted GlideRecord document to "Complete"
+	// Returns true on successful update
+	// Returns false if it does not complete the document
+	_setDocStateComplete: function (targetGR) {
+		
+		if (this.CLOSED_STATE_MAP[targetGR.sys_class_name]) {
+			targetGR.state = this.CLOSED_STATE_MAP[targetGR.sys_class_name];
+			if (targetGR.update()) {
+				return true;
+			}
+		}
+		return false;
+	},
+	
+	type: 'Utils'
+};]]></script>
+        <sys_class_name>sys_script_include</sys_class_name>
+        <sys_created_by>dave.knight</sys_created_by>
+        <sys_created_on>2017-06-21 13:56:08</sys_created_on>
+        <sys_customer_update>true</sys_customer_update>
+        <sys_id>4d3e7f244fe3b60056faac118110c7fe</sys_id>
+        <sys_mod_count>10</sys_mod_count>
+        <sys_name>Utils</sys_name>
+        <sys_package display_value="Checklist" source="x_snc_checklist">e71e3b244fe3b60056faac118110c773</sys_package>
+        <sys_policy>read</sys_policy>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="Checklist">e71e3b244fe3b60056faac118110c773</sys_scope>
+        <sys_update_name>sys_script_include_4d3e7f244fe3b60056faac118110c7fe</sys_update_name>
+        <sys_updated_by>dave.knight</sys_updated_by>
+        <sys_updated_on>2017-06-22 12:08:47</sys_updated_on>
+    </sys_script_include>
+</record_update>
