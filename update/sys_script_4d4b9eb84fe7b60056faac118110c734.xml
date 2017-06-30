@@ -30,6 +30,19 @@
         <role_conditions/>
         <script><![CDATA[(function executeRule(current, previous /*null when async*/) {
 	
+	// This is just an example business rule for the incident table.
+	// Do NOT use it without modification. 
+	// Please copy it with an insert and stay, change the table and checklist items
+	// to something more approprate, and activate that new business rule.
+	//
+	// The checklist items are just an array of strings you pass into the the
+	// x_snc_checklist.Utils createList function. Each string is the text you will see
+	// on a checklist item. 
+	// To define the checklist item array, just create a comma seperated list of 
+	// strings using the same format you see in the example below. 
+	// The order of the strings from left to right will be the order of the checklist 
+	// from top to bottom
+	
 	var items = [];
 	switch (current.category.toString()) {
 		case "software":
@@ -58,7 +71,7 @@
         <sys_domain>global</sys_domain>
         <sys_domain_path>/</sys_domain_path>
         <sys_id>4d4b9eb84fe7b60056faac118110c734</sys_id>
-        <sys_mod_count>2</sys_mod_count>
+        <sys_mod_count>5</sys_mod_count>
         <sys_name>Auto-generate checklist example</sys_name>
         <sys_overrides/>
         <sys_package display_value="Checklist" source="x_snc_checklist">e71e3b244fe3b60056faac118110c773</sys_package>
@@ -67,7 +80,7 @@
         <sys_scope display_value="Checklist">e71e3b244fe3b60056faac118110c773</sys_scope>
         <sys_update_name>sys_script_4d4b9eb84fe7b60056faac118110c734</sys_update_name>
         <sys_updated_by>dave.knight</sys_updated_by>
-        <sys_updated_on>2017-06-22 03:10:19</sys_updated_on>
+        <sys_updated_on>2017-06-30 05:02:36</sys_updated_on>
         <template/>
         <when>after</when>
     </sys_script>

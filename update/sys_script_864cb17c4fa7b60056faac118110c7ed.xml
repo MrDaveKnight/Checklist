@@ -31,9 +31,30 @@
         <rest_variables/>
         <role_conditions/>
         <script><![CDATA[(function executeRule(current, previous /*null when async*/) {
-
-	new Utils().updateDocStateIfComplete (current);
-
+	
+	// Before activating this business rule, ensure that you review and 
+	// edit if necessary the CLOSED_STATE_MAP in the x_snc_checklist.Utils script include
+	// in order to define -
+	//     1. The tables with records that have checklists that you want this business rule to close/resolve, and
+	//     2. Define the value you want to set the state field to at the completion of the checklist
+	//
+	// This logic assume that the table you choose has a field named "state". 
+	
+	var checklistUtils = 0;
+	try {
+		checklistUtils = new Utils();
+	}
+	catch (e) {
+		gs.error("Had an issue trying to initialize the checklist utility: " + e);
+	}
+	
+	try {
+		checklistUtils.updateDocStateIfComplete (current);
+	}
+	catch (e) {
+		gs.error("Had an issue trying to execute the checklist completion processing: " + e);
+	}
+	
 })(current, previous);]]></script>
         <sys_class_name>sys_script</sys_class_name>
         <sys_created_by>dave.knight</sys_created_by>
@@ -42,7 +63,7 @@
         <sys_domain>global</sys_domain>
         <sys_domain_path>/</sys_domain_path>
         <sys_id>864cb17c4fa7b60056faac118110c7ed</sys_id>
-        <sys_mod_count>6</sys_mod_count>
+        <sys_mod_count>10</sys_mod_count>
         <sys_name>Set document state if checklist complete</sys_name>
         <sys_overrides/>
         <sys_package display_value="Checklist" source="x_snc_checklist">e71e3b244fe3b60056faac118110c773</sys_package>
@@ -51,7 +72,7 @@
         <sys_scope display_value="Checklist">e71e3b244fe3b60056faac118110c773</sys_scope>
         <sys_update_name>sys_script_864cb17c4fa7b60056faac118110c7ed</sys_update_name>
         <sys_updated_by>dave.knight</sys_updated_by>
-        <sys_updated_on>2017-06-22 22:14:05</sys_updated_on>
+        <sys_updated_on>2017-06-30 04:56:32</sys_updated_on>
         <template/>
         <when>after</when>
     </sys_script>

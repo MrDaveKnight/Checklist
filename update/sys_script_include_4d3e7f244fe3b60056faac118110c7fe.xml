@@ -10,18 +10,25 @@
         <script><![CDATA[var Utils = Class.create();
 Utils.prototype = {
 	
-	// ------------------------------------------------------------
-	// EDIT ME: Document Complete/Resolved States
-	// ------------------------------------------------------------
-	// These tables, and only these tables, will be "Completed" when
+	// ------------------------------------------------------------------------
+	// EDIT ME: Define the Complete/Resolved states for specific tables 
+	// ------------------------------------------------------------------------
+	//
+	// Logic that requires this map is triggered by the 
+	// "Set document state if checklist complete" business rule in this application. 
+	// 
+	// The tables specified in this map, and only those tables, will be "Completed" when
 	// the _setDocStateComplete(document) method is called with an
 	// arbitrary GlideRecord document. 
 	// Reference the updateDocStateIfComplete() method.
-	// The "Set document state if checklist complete" business rule in this 
+	// Again, the "Set document state if checklist complete" business rule in this 
 	// application, if active, will call updateDocStateIfComplete(item) 
-	// with a checked checklist item. 
+	// with a just checked checklist item. 
 	//
-	// Format - table_name:complete_state_value
+	// ------------------------------------------------------------------------
+	// Format for the CLOSED_STATE_MAP - <table_name> : <complete_state_value>
+	// ------------------------------------------------------------------------
+	//
 	CLOSED_STATE_MAP: {
 		"incident" : 6,
 		"cert_task" : 3
@@ -154,7 +161,7 @@ Utils.prototype = {
         <sys_created_on>2017-06-21 13:56:08</sys_created_on>
         <sys_customer_update>true</sys_customer_update>
         <sys_id>4d3e7f244fe3b60056faac118110c7fe</sys_id>
-        <sys_mod_count>10</sys_mod_count>
+        <sys_mod_count>13</sys_mod_count>
         <sys_name>Utils</sys_name>
         <sys_package display_value="Checklist" source="x_snc_checklist">e71e3b244fe3b60056faac118110c773</sys_package>
         <sys_policy>read</sys_policy>
@@ -162,6 +169,6 @@ Utils.prototype = {
         <sys_scope display_value="Checklist">e71e3b244fe3b60056faac118110c773</sys_scope>
         <sys_update_name>sys_script_include_4d3e7f244fe3b60056faac118110c7fe</sys_update_name>
         <sys_updated_by>dave.knight</sys_updated_by>
-        <sys_updated_on>2017-06-22 12:08:47</sys_updated_on>
+        <sys_updated_on>2017-06-30 04:40:20</sys_updated_on>
     </sys_script_include>
 </record_update>
